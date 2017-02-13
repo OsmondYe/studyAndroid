@@ -195,6 +195,8 @@ public class SkyDRMBlackBoxTest {
 
     private void routine_LogoutFromHomePage() throws Exception {
 
+
+
         // direct the flow into Profile Page
         UiObject profileBtn = mDevice.findObject(new UiSelector()
                 .className("android.widget.CheckedTextView")
@@ -205,6 +207,7 @@ public class SkyDRMBlackBoxTest {
 
         // watt for profile page displayed
         mDevice.wait(Until.hasObject(By.res(SkyDRMConstants.APP_PACKAGE_NAME, "header_info_profile")), 2_000);
+
 
         // into User section in Profile page
         UiObject2 userDetail = mDevice.findObject(By.res("com.skydrm.rmc:id/ll_user_detail"));
