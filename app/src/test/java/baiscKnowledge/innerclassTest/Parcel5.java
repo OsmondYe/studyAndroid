@@ -16,6 +16,10 @@ public class Parcel5 {
             public String readLabel() {
                 return label;
             }
+            // inner class can not have static declaration
+//            static void thiste(){
+//
+//            }
         }
 
         return new PDestination(s);

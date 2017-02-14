@@ -1,7 +1,10 @@
 package baiscKnowledge;
 
+import android.database.DefaultDatabaseErrorHandler;
+
 import org.junit.Test;
 
+import baiscKnowledge.innerclassTest.ClassInInterface;
 import baiscKnowledge.innerclassTest.Contents;
 import baiscKnowledge.innerclassTest.Destination;
 import baiscKnowledge.innerclassTest.DotNew;
@@ -10,6 +13,7 @@ import baiscKnowledge.innerclassTest.Parcel1;
 import baiscKnowledge.innerclassTest.Parcel2;
 import baiscKnowledge.innerclassTest.Parcel4;
 import baiscKnowledge.innerclassTest.Parcel5;
+import baiscKnowledge.innerclassTest.ParcelNestedClass;
 import baiscKnowledge.innerclassTest.Selector;
 import baiscKnowledge.innerclassTest.Sequence;
 import baiscKnowledge.innerclassTest.Warpping;
@@ -79,5 +83,17 @@ public class InnerClassTest {
         Contents c =p5.contents();
         Warpping w = p5.warpping(10);
         int i =w.value();
+    }
+
+    @Test
+    public void test_NestedClass() throws Exception {
+
+        ParcelNestedClass p =new ParcelNestedClass();
+        Contents c=ParcelNestedClass.contents();
+        Destination d = ParcelNestedClass.destination();
+
+        //
+        new ClassInInterface.Test().howy();
+
     }
 }
