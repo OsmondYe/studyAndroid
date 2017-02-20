@@ -4,6 +4,8 @@ import android.database.DefaultDatabaseErrorHandler;
 
 import org.junit.Test;
 
+import java.util.Arrays;
+
 import baiscKnowledge.innerclassTest.ClassInInterface;
 import baiscKnowledge.innerclassTest.Contents;
 import baiscKnowledge.innerclassTest.Destination;
@@ -94,6 +96,7 @@ public class InnerClassTest {
 
         //
         new ClassInInterface.Test().howy();
+
 
     }
 }
