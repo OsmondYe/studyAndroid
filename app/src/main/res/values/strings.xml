@@ -10,4 +10,6 @@
     <string name="ActEfectiveNavi">ToEffectiveNavigation</string>
     <string name="title_activity_main">MainActivity</string>
     <string name="viewpager">ViewPager</string>
+    <string name="tostyledwidget">ToStyledWidget</string>
+    <string name="tobullseye">toBullsEye</string>
 </resources>
