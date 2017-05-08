@@ -17,6 +17,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
+            android:background="@drawable/row_background"
             >
             <Button
                 android:id="@+id/toStyledWidget"
@@ -28,6 +29,13 @@
                 android:text="@string/tobullseye"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent" />
+            <Button
+                android:background="@drawable/row_background"
+                android:id="@+id/toSimpleListView"
+                android:text="@string/simplelistview"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
         </LinearLayout>
     </ScrollView>
 
