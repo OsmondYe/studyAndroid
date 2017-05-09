@@ -20,7 +20,8 @@
         <activity android:name=".ViewPagerActivity" />
         <activity android:name=".StyledWidgets" />
         <activity android:name=".BullsEye" />
-        <activity android:name=".SimpleListView"></activity>
+        <activity android:name=".SimpleListView" />
+        <activity android:name=".ViewPagerActivity2"></activity>
     </application>
 
 </manifest>

@@ -13,4 +13,5 @@
     <string name="tostyledwidget">ToStyledWidget</string>
     <string name="tobullseye">toBullsEye</string>
     <string name="simplelistview">SimpleListView</string>
+    <string name="viewpageract">ViewPagerAct</string>
 </resources>

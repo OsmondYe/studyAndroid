@@ -54,6 +54,17 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    public void onUIButtonClick(View view){
+        if(view.getId() == R.id.toViewPager){
+            toActiviy(ViewPagerActivity.class);
+            return;
+        }
+    }
+
+    private void toActiviy(Class<?> cls){
+        startActivity(new Intent(MainActivity.this,cls));
+    }
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
          getMenuInflater().inflate(R.menu.menu_main,menu);
