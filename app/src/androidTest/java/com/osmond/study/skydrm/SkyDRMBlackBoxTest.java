@@ -84,29 +84,31 @@ public class SkyDRMBlackBoxTest {
         // make sure mDevice is valid
         assertThat(mDevice, notNullValue());
 
-        // UI elements
+        // config the param to specify the login clickable
         BySelector loginBtn = By.res(SkyDRMConstants.APP_PACKAGE_NAME, "login");
 
-        // sub routine
+        // Test Splash
         routine_SplashPage();
 
-        // Test login Button
+        // Find and Click the login clickable
         UiObject2 loginButton = mDevice.findObject(loginBtn);
         if (loginButton.isEnabled()) {
             loginButton.click();        // will goto another Activitys
         }
 
-        // for login
+        // Test Login
         routine_LoginFromLoginPage("osmond.ye@nextlabs.com", "123blue!");
 
-        // must in Home pages
-        // wait for into Home Pages
+
+        // Wait for Main-Home page displayed
         mDevice.wait(Until.hasObject(By.res(SkyDRMConstants.APP_PACKAGE_NAME, "activity_main")), 2_000);
 
         //
         // for other test in Home
         //
-        // for logout
+
+
+        // Test Logout
         routine_LogoutFromHomePage();
 
     }
@@ -175,10 +177,10 @@ public class SkyDRMBlackBoxTest {
         // wait web-content displayed
         mDevice.waitForWindowUpdate(SkyDRMConstants.APP_PACKAGE_NAME, WAIT_UI_TIMEOUT);
 
-        // find 3 elemtns
+        // find 3 elems
         UiObject emailUI = mDevice.findObject(new UiSelector().className("android.widget.EditText").index(0));
         UiObject passUI = mDevice.findObject(new UiSelector().className("android.widget.EditText").index(1));
-        UiObject loginBtn = mDevice.findObject(new UiSelector().description("LOG IN").className("android.widget.Button").index(2));
+        UiObject loginBtn = mDevice.findObject(new UiSelector().description("Log In").className("android.widget.Button").index(1));
 
         // input email
         emailUI.click();
@@ -195,29 +197,41 @@ public class SkyDRMBlackBoxTest {
 
     private void routine_LogoutFromHomePage() throws Exception {
 
-
-
-        // direct the flow into Profile Page
+        // Open the Drawer in Main Page
         UiObject profileBtn = mDevice.findObject(new UiSelector()
-                .className("android.widget.CheckedTextView")
+                .className("android.widget.ImageButton")
                 .packageName("com.skydrm.rmc")
-                .resourceId("com.skydrm.rmc:id/item_name")
-                .text("Profile"));
+                .index(0)
+        );
         profileBtn.click();
 
+
+        // Click the Profile Icon in Drawer
+        UiObject profileIcon = mDevice.findObject(new UiSelector()
+                .packageName("com.skydrm.rmc")
+                .className("android.widget.ImageButton")
+                .resourceId("com.skydrm.rmc:id/iv_setting_drawer")
+        );
+        profileIcon.click();
+
+
         // watt for profile page displayed
-        mDevice.wait(Until.hasObject(By.res(SkyDRMConstants.APP_PACKAGE_NAME, "header_info_profile")), 2_000);
+        mDevice.wait(Until.hasObject(By.res(SkyDRMConstants.APP_PACKAGE_NAME, "com.skydrm.rmc:id/body_info_profile")), 2_000);
 
 
-        // into User section in Profile page
-        UiObject2 userDetail = mDevice.findObject(By.res("com.skydrm.rmc:id/ll_user_detail"));
-        userDetail.click();
+        // Find and Click the Logout Icon
 
-        // wait for logout button displayed
-        UiObject2 logoutBtn = mDevice.wait(Until.findObject(By.res("com.skydrm.rmc:id/bt_logout_user_info_view")),WAIT_UI_TIMEOUT);
-        logoutBtn.click();
+        UiObject LogoutIcon = mDevice.findObject(new UiSelector()
+                .packageName("com.skydrm.rmc")
+                .className("android.widget.TextView")
+                .resourceId("com.skydrm.rmc:id/tv_logout")
+        );
+        LogoutIcon.click();
 
-        // find OK button in Dialog
+        // wait for Logout-Dialog Displayed
+        mDevice.wait(Until.findObject(By.text("Are you sure you want to sign out?")),WAIT_UI_TIMEOUT);
+
+        // find and click the Ok button
         mDevice.wait(Until.findObject(By.res("android:id/button1")), 2_000).click();
     }
 
