@@ -21,7 +21,33 @@
         <activity android:name=".StyledWidgets" />
         <activity android:name=".BullsEye" />
         <activity android:name=".SimpleListView" />
-        <activity android:name=".ViewPagerActivity2"></activity>
+        <activity android:name=".ViewPagerActivity2" />
+        <activity
+            android:name=".DropBoxTest"
+            android:label="@string/title_activity_drop_box_test"
+            android:launchMode="singleTop"
+            android:theme="@style/AppTheme.NoActionBar">
+            <intent-filter>
+                <data android:scheme="db-7os12uldmn5nlv9" />
+
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.BROWSABLE" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+        <activity android:name=".GoogleDriveTest"
+            android:launchMode="singleTop">
+            <intent-filter>
+                <data android:scheme="com.osmond.study" />
+
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.BROWSABLE" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+
+        </activity>
     </application>
 
 </manifest>

@@ -19,7 +19,6 @@
     <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 
 
-
     <style name="FormButtonInActivity" parent="Base.Widget.AppCompat.Button">
         <item name="android:textSize">22sp</item>
         <item name="android:textColor">@color/colorTitleText2</item>

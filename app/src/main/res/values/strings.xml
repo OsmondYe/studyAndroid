@@ -14,4 +14,7 @@
     <string name="tobullseye">toBullsEye</string>
     <string name="simplelistview">SimpleListView</string>
     <string name="viewpageract">ViewPagerAct</string>
+    <string name="todropboxtest">toDropBoxTest</string>
+    <string name="title_activity_drop_box_test">DropBoxTest</string>
+    <string name="togoogledrivetest">toGoogleDriveTest</string>
 </resources>

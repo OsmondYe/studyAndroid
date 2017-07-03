@@ -52,6 +52,20 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        findViewById(R.id.toDropboxTest).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(MainActivity.this, DropBoxTest.class));
+            }
+        });
+        findViewById(R.id.toGoogleDriveTest).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(MainActivity.this, GoogleDriveTest.class));
+            }
+        });
+
+
     }
 
     public void onUIButtonClick(View view){
