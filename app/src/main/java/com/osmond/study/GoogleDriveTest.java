@@ -1,10 +1,13 @@
 package com.osmond.study;
 
+import android.app.Activity;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.text.method.ScrollingMovementMethod;
 import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
@@ -25,14 +28,16 @@ import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
 
-public class GoogleDriveTest extends AppCompatActivity {
+//public class GoogleDriveTest extends AppCompatActivity {
+public class GoogleDriveTest extends Activity {
 
+    private static final String sClientID = "1014172469438-dv90limts9g6o1ert79mbhdq1n506q63.apps.googleusercontent.com";
 
     String mAuthorizationCode = null;
 
-    String mAccessToken=null;
+    String mAccessToken = null;
     String mTokenType = null;
-    long expired_in =0;
+    long mExpired_In = 0;
     String mRefreshToken = null;
 
     TextView mInfo = null;
@@ -89,6 +94,14 @@ public class GoogleDriveTest extends AppCompatActivity {
         setContentView(R.layout.activity_google_drive_test);
 
         mInfo = (TextView) findViewById(R.id.info);
+        mInfo.setMovementMethod(ScrollingMovementMethod.getInstance()); // attach scrolling
+        mInfo.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                mInfo.setText("");
+                return true;
+            }
+        });
 
         findViewById(R.id.link).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -97,10 +110,48 @@ public class GoogleDriveTest extends AppCompatActivity {
             }
         });
 
+
         findViewById(R.id.exchange).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 onExchange();
+            }
+        });
+
+        findViewById(R.id.refresh).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                refersh();
+            }
+        });
+
+        findViewById(R.id.save).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                SharedPreferences sp=getSharedPreferences("GoogleDriveTest",MODE_APPEND);
+                SharedPreferences.Editor edit = sp.edit();
+                edit.putString("mAuthorizationCode",mAuthorizationCode);
+                edit.putString("mAccessToken",mAccessToken);
+                edit.putString("mRefreshToken",mRefreshToken);
+                edit.putString("mTokenType",mTokenType);
+                edit.putLong("mExpired_In",mExpired_In);
+                edit.apply();
+                addLine("save tokens succeed");
+
+            }
+        });
+
+        findViewById(R.id.load).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                SharedPreferences sp=getSharedPreferences("GoogleDriveTest",MODE_APPEND);
+                mAuthorizationCode = sp.getString("mAuthorizationCode",null);
+                mAccessToken=sp.getString("mAccessToken",null);
+                mRefreshToken=sp.getString("mRefreshToken",null);
+                mTokenType = sp.getString("mTokenType",null);
+                mExpired_In = sp.getLong("mExpired_In",0);
+                addLine("load token succeed");
+                dumpTokens();
             }
         });
 
@@ -112,12 +163,33 @@ public class GoogleDriveTest extends AppCompatActivity {
         });
     }
 
+    private void dumpTokens(){
+        addLine("dump tokens:");
+
+        addLine("===authorization code===");
+        addLine(mAuthorizationCode);
+
+        addLine("===access_token===");
+        addLine((mAccessToken));
+
+        addLine("===token_type===");
+        addLine(mTokenType);
+
+        addLine("===expires_in===");
+        addLine(mExpired_In + "");
+
+        addLine("===refresh_token===");
+        addLine(mRefreshToken);
+    }
+
     @Override
     protected void onResume() {
         super.onResume();
         Intent intent = getIntent();
         if (intent != null) {
             Log.v("onResume,intent", intent.toString());
+            parseOAuthIntent(intent);
+
         }
     }
 
@@ -126,13 +198,23 @@ public class GoogleDriveTest extends AppCompatActivity {
             @Override
             public void run() {
                 mInfo.append(str + "\n");
+                scrollToLastLine();
+            }
+            private void scrollToLastLine(){
+                // auto scroll to last lint
+                int lineCount= mInfo.getLineCount();
+                int lintHeight =mInfo.getLineHeight();
+                int height =mInfo.getHeight();
+                int offset = lineCount*lintHeight;
+                if(offset > height){
+                    mInfo.scrollTo(0,offset-height);
+                }
             }
         });
     }
 
-    @Override
-    protected void onNewIntent(Intent intent) {
-        super.onNewIntent(intent);
+
+    private void parseOAuthIntent(Intent intent) {
         if (intent == null) {
             return;
         }
@@ -163,11 +245,15 @@ public class GoogleDriveTest extends AppCompatActivity {
             return;
         }
         Log.v("onNewIntent", "retrived the token:" + code);
-
         mAuthorizationCode = code;
-
-        addLine("AuthorizationCode:");
+        addLine("===authorization code===");
         addLine(code);
+    }
+
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        parseOAuthIntent(intent);
 
     }
 
@@ -182,7 +268,7 @@ public class GoogleDriveTest extends AppCompatActivity {
                     "scope", "https://www.googleapis.com/auth/drive",
                     "response_type", "code",
                     "redirect_uri", "com.osmond.study://",
-                    "client_id", "1014172469438-dv90limts9g6o1ert79mbhdq1n506q63.apps.googleusercontent.com",
+                    "client_id", sClientID,
                     "state", "oauth2:156da5e9576ad692a101a15e2ce53d57"};
 
             String url = buildUrlWithParams(locale.toString(), host, path, params);
@@ -196,20 +282,20 @@ public class GoogleDriveTest extends AppCompatActivity {
         }
     }
 
-    private void onExchange(){
+    private void onExchange() {
         // to get tokens
-        class Handler{
-            Runnable get(){
-                return  new Runnable() {
+        class Handler {
+            Runnable get() {
+                return new Runnable() {
                     @Override
                     public void run() {
                         OkHttpClient client = new OkHttpClient();
 
                         RequestBody body = new FormBody.Builder()
                                 .add("grant_type", "authorization_code")
-                                .add("client_id", "1014172469438-dv90limts9g6o1ert79mbhdq1n506q63.apps.googleusercontent.com")
+                                .add("client_id", sClientID)
                                 .add("code", mAuthorizationCode)
-                                .add("redirect_uri","com.osmond.study://")
+                                .add("redirect_uri", "com.osmond.study://")
                                 .build();
 
 
@@ -218,23 +304,23 @@ public class GoogleDriveTest extends AppCompatActivity {
                                 .url("https://www.googleapis.com/oauth2/v4/token")
                                 .build();
 
-                        Response response=null;
-                        String result=null;
+                        Response response = null;
+                        String result = null;
                         try {
                             response = client.newCall(request).execute();
-                            result =response.body().string();
+                            result = response.body().string();
                         } catch (IOException e) {
                             e.printStackTrace();
-                            addLine("exchange failed:"+e.toString());
+                            addLine("exchange failed:" + e.toString());
                             return;
                         }
-                        if (!response.isSuccessful()){
-                            addLine("exchange failed:"+response.toString());
+                        if (!response.isSuccessful()) {
+                            addLine("exchange failed:" + result);
                             return;
                         }
 
 //                        addLine("exchange result:"+result);
-                        Log.v("exchange result:",result);
+                        Log.v("exchange result:", result);
 
                         // begin to parse the token
                         /*
@@ -246,20 +332,20 @@ public class GoogleDriveTest extends AppCompatActivity {
 }
                          */
                         try {
-                            JSONObject jresult =new JSONObject(result);
-                            addLine("Access_Token:");
-                            mAccessToken=jresult.getString("access_token");
+                            JSONObject jresult = new JSONObject(result);
+                            addLine("===access_token===");
+                            mAccessToken = jresult.getString("access_token");
                             addLine((mAccessToken));
 
-                            addLine("Token_Type:");
+                            addLine("===token_type===");
                             mTokenType = jresult.getString("token_type");
                             addLine(mTokenType);
 
-                            addLine("Expired_In");
-                            expired_in = jresult.getLong("expires_in");
-                            addLine(expired_in +"");
+                            addLine("===expires_in===");
+                            mExpired_In = jresult.getLong("expires_in");
+                            addLine(mExpired_In + "");
 
-                            addLine("Refresh_Token:");
+                            addLine("===refresh_token===");
                             mRefreshToken = jresult.getString("refresh_token");
                             addLine(mRefreshToken);
                         } catch (JSONException e) {
@@ -275,6 +361,71 @@ public class GoogleDriveTest extends AppCompatActivity {
         AsyncTask.THREAD_POOL_EXECUTOR.execute(new Handler().get());
     }
 
+
+    private void refersh() {
+        // post to  https://www.googleapis.com/oauth2/v4/token
+        class Handler {
+            Runnable get() {
+                return new Runnable() {
+                    @Override
+                    public void run() {
+                        OkHttpClient client = new OkHttpClient();
+                        FormBody body = new FormBody.Builder()
+                                .add("refresh_token", mRefreshToken)
+                                .add("client_id", sClientID)
+                                .add("grant_type", "refresh_token")
+                                .build();
+                        Request request = new Request.Builder()
+                                .url("https://www.googleapis.com/oauth2/v4/token")
+                                .post(body)
+                                .build();
+
+                        Response response;
+                            String result;
+                        try {
+                            response = client.newCall(request).execute();
+                            result = response.body().string();
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                            return;
+                        }
+                        if (!response.isSuccessful()) {
+                            return;
+                        }
+                        Log.v("refresh result:", result);
+                        // parse result
+                        try {
+                            JSONObject jresult = new JSONObject(result);
+
+                            addLine("refresh result:");
+
+                            addLine("===access_token===");
+                            mAccessToken = jresult.getString("access_token");
+                            addLine(mAccessToken);
+
+                            addLine("===expires_in===");
+                            mExpired_In =jresult.getLong("expires_in");
+                            addLine(mExpired_In+"");
+
+                            addLine("===token_type===");
+                            mTokenType =jresult.getString("token_type");
+                            addLine(mTokenType);
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+
+
+                    }
+                };
+            }
+
+            ;
+        }
+
+        AsyncTask.THREAD_POOL_EXECUTOR.execute(new Handler().get());
+    }
+
+    // API about
     private void onAbout() {
         class Handler {
             Runnable get() {
@@ -286,7 +437,7 @@ public class GoogleDriveTest extends AppCompatActivity {
                         Request request = new Request.Builder()
                                 .url("https://www.googleapis.com/drive/v3/about?fields=kind,user,storageQuota")
                                 .get()
-                                .addHeader("Authorization",mTokenType+ " " + mAccessToken)
+                                .addHeader("Authorization", mTokenType + " " + mAccessToken)
                                 .build();
 
                         Response response = null;
@@ -298,8 +449,8 @@ public class GoogleDriveTest extends AppCompatActivity {
                         }
                         String result;
                         try {
-                            result=response.body().string();
-                            Log.v("OnAbout result",result);
+                            result = response.body().string();
+                            Log.v("OnAbout result", result);
                         } catch (IOException e) {
                             e.printStackTrace();
                             return;
@@ -314,13 +465,15 @@ public class GoogleDriveTest extends AppCompatActivity {
             }
         }
 
-        if (mAuthorizationCode ==null){
+        if (mAuthorizationCode == null) {
             addLine("mAuthorizationCode==null");
             return;
         }
 
-            AsyncTask.THREAD_POOL_EXECUTOR.execute(new Handler().get());
+        AsyncTask.THREAD_POOL_EXECUTOR.execute(new Handler().get());
 
     }
+
+    
 }
 
