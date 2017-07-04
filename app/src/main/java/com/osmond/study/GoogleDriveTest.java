@@ -32,6 +32,9 @@ import okhttp3.Response;
 public class GoogleDriveTest extends Activity {
 
     private static final String sClientID = "1014172469438-dv90limts9g6o1ert79mbhdq1n506q63.apps.googleusercontent.com";
+    // for iphone
+    // - problems:  redirect_url mismatch
+//    private static final String sClientID = "1021466473229-gfuljuu4spgkvs4vnk6hl48ah1rcpfre.apps.googleusercontent.com";
 
     String mAuthorizationCode = null;
 
@@ -175,18 +178,25 @@ public class GoogleDriveTest extends Activity {
 
         addLine("===authorization code===");
         addLine(mAuthorizationCode);
+        Log.v("dump-mAuthorizationCode","\n"+mAuthorizationCode);
 
         addLine("===access_token===");
         addLine((mAccessToken));
+        Log.v("dump-mAccessToken","\n"+mAccessToken);
 
         addLine("===token_type===");
         addLine(mTokenType);
+        Log.v("dump-mTokenType","\n"+mTokenType);
 
         addLine("===expires_in===");
         addLine(mExpired_In + "");
+        Log.v("dump-mExpired_In","\n"+mExpired_In+"");
 
         addLine("===refresh_token===");
         addLine(mRefreshToken);
+        Log.v("dump-mRefreshToken","\n"+mRefreshToken);
+
+
     }
 
     @Override
@@ -380,6 +390,9 @@ public class GoogleDriveTest extends Activity {
                         FormBody body = new FormBody.Builder()
                                 .add("refresh_token", mRefreshToken)
                                 .add("client_id", sClientID)
+                                //iphone
+//                                .add("refresh_token","1/O3ng4tqztsKP7-nPw4n4DI45knCB6mqxF3eBFRyPfNPD_BXmJqnDJk8s7G6qxh_z")
+//                                .add("client_id","1021466473229-gfuljuu4spgkvs4vnk6hl48ah1rcpfre.apps.googleusercontent.com")
                                 .add("grant_type", "refresh_token")
                                 .build();
                         Request request = new Request.Builder()
