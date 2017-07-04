@@ -161,6 +161,13 @@ public class GoogleDriveTest extends Activity {
                 onAbout();
             }
         });
+
+        findViewById(R.id.list).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onList();
+            }
+        });
     }
 
     private void dumpTokens(){
@@ -474,6 +481,103 @@ public class GoogleDriveTest extends Activity {
 
     }
 
-    
+    private void onList(){
+        class Handler{
+            Runnable get(){
+                return new Runnable() {
+                    @Override
+                    public void run() {
+                        // GET https://www.googleapis.com/drive/v3/about
+                        OkHttpClient client = new OkHttpClient();
+                        Request request = new Request.Builder()
+                                .url("https://www.googleapis.com/drive/v3/files?q='root' in parents and trashed != true")
+                                .get()
+                                .addHeader("Authorization", mTokenType + " " + mAccessToken)
+                                .build();
+
+                        Response response = null;
+                        try {
+                            response = client.newCall(request).execute();
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                            return;
+                        }
+                        String result;
+                        try {
+                            result = response.body().string();
+                            Log.v("onList result", result);
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                            return;
+                        }
+                        if (!response.isSuccessful()) {
+                            return;
+                        }
+                        addLine(result);
+                    }
+                };
+            }
+        }
+        AsyncTask.THREAD_POOL_EXECUTOR.execute(new Handler().get());
+    }
+
+    private void onCreate(){
+        class Handler{
+            Runnable get(){
+                return new Runnable() {
+                    @Override
+                    public void run() {
+
+                    }
+                };
+            }
+        }
+        AsyncTask.THREAD_POOL_EXECUTOR.execute(new Handler().get());
+    }
+
+    private void onDelete(){
+        class Handler{
+            Runnable get(){
+                return new Runnable() {
+                    @Override
+                    public void run() {
+
+                    }
+                };
+            }
+        }
+        AsyncTask.THREAD_POOL_EXECUTOR.execute(new Handler().get());
+    }
+
+    private void onUpload(){
+        class Handler{
+            Runnable get(){
+                return new Runnable() {
+                    @Override
+                    public void run() {
+
+                    }
+                };
+            }
+        }
+        AsyncTask.THREAD_POOL_EXECUTOR.execute(new Handler().get());
+    }
+
+    private void onDownload(){
+        class Handler{
+            Runnable get(){
+                return new Runnable() {
+                    @Override
+                    public void run() {
+
+                    }
+                };
+            }
+        }
+        AsyncTask.THREAD_POOL_EXECUTOR.execute(new Handler().get());
+    }
+
+
+
 }
 
