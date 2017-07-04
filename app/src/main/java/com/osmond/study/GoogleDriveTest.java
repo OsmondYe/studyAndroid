@@ -31,10 +31,13 @@ import okhttp3.Response;
 //public class GoogleDriveTest extends AppCompatActivity {
 public class GoogleDriveTest extends Activity {
 
-    private static final String sClientID = "1014172469438-dv90limts9g6o1ert79mbhdq1n506q63.apps.googleusercontent.com";
+//    private static final String sClientID = "1014172469438-dv90limts9g6o1ert79mbhdq1n506q63.apps.googleusercontent.com";
     // for iphone
     // - problems:  redirect_url mismatch
-//    private static final String sClientID = "1021466473229-gfuljuu4spgkvs4vnk6hl48ah1rcpfre.apps.googleusercontent.com";
+    private static final String sClientID = "1021466473229-gfuljuu4spgkvs4vnk6hl48ah1rcpfre.apps.googleusercontent.com";
+
+    /// "com.osmond.study://"
+    private static final String sRedirect_URL= "com.googleusercontent.apps.1021466473229-gfuljuu4spgkvs4vnk6hl48ah1rcpfre";
 
     String mAuthorizationCode = null;
 
@@ -245,7 +248,7 @@ public class GoogleDriveTest extends Activity {
         if (scheme == null) {
             return;
         }
-        if (!"com.osmond.study".equals(scheme)) {
+        if (!sRedirect_URL.equals(scheme)) {
             return;
         }
         String part = uri.getSchemeSpecificPart();
@@ -284,7 +287,7 @@ public class GoogleDriveTest extends Activity {
             String[] params = {
                     "scope", "https://www.googleapis.com/auth/drive",
                     "response_type", "code",
-                    "redirect_uri", "com.osmond.study://",
+                    "redirect_uri", sRedirect_URL+"://",
                     "client_id", sClientID,
                     "state", "oauth2:156da5e9576ad692a101a15e2ce53d57"};
 
@@ -312,7 +315,7 @@ public class GoogleDriveTest extends Activity {
                                 .add("grant_type", "authorization_code")
                                 .add("client_id", sClientID)
                                 .add("code", mAuthorizationCode)
-                                .add("redirect_uri", "com.osmond.study://")
+                                .add("redirect_uri", sRedirect_URL+"://")
                                 .build();
 
 

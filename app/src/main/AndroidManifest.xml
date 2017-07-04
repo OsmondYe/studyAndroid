@@ -40,7 +40,10 @@
         <activity android:name=".GoogleDriveTest"
             android:launchMode="singleTop">
             <intent-filter>
-                <data android:scheme="com.osmond.study" />
+                <!--andorid -->
+                <!--<data android:scheme="com.osmond.study" />-->
+                <!--ipone use-->
+                <data android:scheme="com.googleusercontent.apps.1021466473229-gfuljuu4spgkvs4vnk6hl48ah1rcpfre" />
 
                 <action android:name="android.intent.action.VIEW" />
 
