@@ -8,6 +8,8 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.text.method.ScrollingMovementMethod;
+import android.util.Base64;
+import android.util.Base64OutputStream;
 import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
@@ -35,6 +37,11 @@ public class GoogleDriveTest extends Activity {
     // for iphone
     // - problems:  redirect_url mismatch
     private static final String sClientID = "1021466473229-gfuljuu4spgkvs4vnk6hl48ah1rcpfre.apps.googleusercontent.com";
+
+    // for Web
+//    private static final String sClientID = "1021466473229-t5pevqkp3ecbmsdpu5tfvqk4lsc2cmah.apps.googleusercontent.com";
+
+
 
     /// "com.osmond.study://"
     private static final String sRedirect_URL= "com.googleusercontent.apps.1021466473229-gfuljuu4spgkvs4vnk6hl48ah1rcpfre";
@@ -285,9 +292,11 @@ public class GoogleDriveTest extends Activity {
             Locale locale = Locale.getDefault();
 
             String[] params = {
-                    "scope", "https://www.googleapis.com/auth/drive",
+                    "scope", "https://www.googleapis.com/auth/userinfo.profile https://www.googleapis.com/auth/drive ",
                     "response_type", "code",
                     "redirect_uri", sRedirect_URL+"://",
+                    // for web
+//                    "redirect_uri", "https://www.skydrm.com/rms/OAuthManager/GDAuth/gdAuthFinish",
                     "client_id", sClientID,
                     "state", "oauth2:156da5e9576ad692a101a15e2ce53d57"};
 
@@ -368,10 +377,31 @@ public class GoogleDriveTest extends Activity {
                             addLine("===refresh_token===");
                             mRefreshToken = jresult.getString("refresh_token");
                             addLine(mRefreshToken);
+
+                            addLine("===id_token===");
+                            String id_token = jresult.getString("id_token");
+                            addLine(id_token);
+
+                            // try to extract user id fro id_token , see https://jwt.io/ and JSON Web Token (JWT)
+                            if(id_token == null){
+                                return;
+                            }
+                            String validValue= id_token.substring(id_token.indexOf('.')+1,id_token.lastIndexOf('.'));
+                            // base 64 decode
+                            String jwt= new String(Base64.decode(validValue,Base64.DEFAULT));
+                            //
+                            addLine("===debug_jwt==");
+                            addLine(jwt);
+
+                            // extract "sub" as userID from the json jwt
+                            addLine("===userID===");
+                            String userID = new JSONObject(jwt).getString("sub");
+                            addLine(userID);
+
+
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
-
 
                     }
                 };
@@ -504,9 +534,10 @@ public class GoogleDriveTest extends Activity {
                     @Override
                     public void run() {
                         // GET https://www.googleapis.com/drive/v3/about
+                        String fields_param="fields=incompleteSearch,nextPageToken,files(id,name,mimeType,modifiedTime,size)";
                         OkHttpClient client = new OkHttpClient();
                         Request request = new Request.Builder()
-                                .url("https://www.googleapis.com/drive/v3/files?q='root' in parents and trashed != true")
+                                .url("https://www.googleapis.com/drive/v3/files?q='root' in parents and trashed != true"+"&"+fields_param)
                                 .get()
                                 .addHeader("Authorization", mTokenType + " " + mAccessToken)
                                 .build();

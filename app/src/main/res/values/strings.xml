@@ -17,4 +17,6 @@
     <string name="todropboxtest">toDropBoxTest</string>
     <string name="title_activity_drop_box_test">DropBoxTest</string>
     <string name="togoogledrivetest">toGoogleDriveTest</string>
+    <string name="toOneDrive">toOnedriveTest</string>
+    <string name="towebview">toWebView</string>
 </resources>

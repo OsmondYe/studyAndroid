@@ -50,5 +50,19 @@
         android:onClick="onUIButtonClick"
         android:text="@string/togoogledrivetest" />
 
+    <Button
+        android:id="@+id/toOneDrive"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/row_background"
+        android:onClick="onUIButtonClick"
+        android:text="@string/toOneDrive" />
+
+    <Button
+        android:id="@+id/toWebView"
+        android:text="@string/towebview"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
 
 </LinearLayout>

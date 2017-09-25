@@ -2,7 +2,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.osmond.study">
 
-    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.INTERNET" />
+
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -37,12 +38,14 @@
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
-        <activity android:name=".GoogleDriveTest"
+        <activity
+            android:name=".GoogleDriveTest"
             android:launchMode="singleTop">
             <intent-filter>
-                <!--andorid -->
-                <!--<data android:scheme="com.osmond.study" />-->
-                <!--ipone use-->
+
+                <!-- andorid -->
+                <!-- <data android:scheme="com.osmond.study" /> -->
+                <!-- ipone use -->
                 <data android:scheme="com.googleusercontent.apps.1021466473229-gfuljuu4spgkvs4vnk6hl48ah1rcpfre" />
 
                 <action android:name="android.intent.action.VIEW" />
@@ -50,8 +53,9 @@
                 <category android:name="android.intent.category.BROWSABLE" />
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
-
         </activity>
+        <activity android:name=".onedrive.OAuth2Activity" />
+        <activity android:name=".WebViewActivity"></activity>
     </application>
 
 </manifest>
